@@ -7,8 +7,8 @@ function getTollFee(vehicle, ...dates) {
     const sortedDates = dates.sort((a, b) => a - b);
 
     for (const date of sortedDates) {
-        if (isTollFreeVehicle(vehicle) || isTollFreeDate(date)) continue;
-        // totalFee += calculateTollFee(vehicle, date);
+        // if (isTollFreeVehicle(vehicle) || isTollFreeDate(date)) continue;
+        totalFee += calculateTollFee(date);
     }
 
     return totalFee;

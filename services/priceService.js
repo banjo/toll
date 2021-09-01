@@ -36,6 +36,6 @@ function convertToTime(hour, minute) {
     return new Date(`${STATIC_DATE}T${hour}:${minute}`);
 }
 
-function isBetweenDates(date, min, max) {
+export function isBetweenDates(date, min, max) {
     return date.getTime() >= min.getTime() && date.getTime() <= max.getTime();
 }

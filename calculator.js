@@ -1,6 +1,6 @@
 import { isTollFreeDate, sortDates } from "./services/dateService.js";
 import { calculateTollFee } from "./services/priceService.js";
-import { isWithinInterval } from "./services/passageService.js";
+import { isMultiplePassage } from "./services/passageService.js";
 import { isTollFreeVehicle } from "./services/vehicleService.js";
 import { settings } from "./config/settings.js";
 
@@ -12,7 +12,7 @@ function getTollFee(vehicle, ...dates) {
     const sortedDates = sortDates(dates);
 
     let totalFee = 0;
-    let latestDate = undefined;
+    let latestPassageTime = undefined;
     let pendingFees = [];
 
     for (const date of sortedDates) {
@@ -20,16 +20,15 @@ function getTollFee(vehicle, ...dates) {
 
         let fee = calculateTollFee(date);
 
-        if (isWithinInterval(date, latestDate)) {
+        if (isMultiplePassage(date, latestPassageTime)) {
             pendingFees.push(fee);
-            continue;
         } else {
             totalFee += getHighestFee(pendingFees);
-            pendingFees = [];
-        }
+            latestPassageTime = date.getTime();
 
-        latestDate = date;
-        pendingFees.push(fee);
+            pendingFees = [];
+            pendingFees.push(fee);
+        }
     }
 
     totalFee += getHighestFee(pendingFees);
@@ -38,9 +37,9 @@ function getTollFee(vehicle, ...dates) {
     return totalFee;
 }
 
-function getHighestFee(latestFees) {
-    if (latestFees.length >= 1) {
-        return Math.max(...latestFees);
+function getHighestFee(pendingFees) {
+    if (pendingFees.length >= 1) {
+        return Math.max(...pendingFees);
     }
 
     return 0;

@@ -4,14 +4,14 @@ const STATIC_DATE = "2020-01-08";
 
 export function calculateTollFee(date) {
     for (const price of prices) {
-        const correctPrice = timeIsWithinPriceRange(date, price);
+        const correctPrice = getPriceForTime(date, price);
         if (correctPrice) return correctPrice;
     }
 
     return 0;
 }
 
-function timeIsWithinPriceRange(date, price) {
+function getPriceForTime(date, price) {
     const currentHour = date.getHours();
     const currentMinute = date.getMinutes();
 
@@ -19,7 +19,10 @@ function timeIsWithinPriceRange(date, price) {
         const [fromHour, fromMinute] = getTimeFromInterval(interval.from);
         const [toHour, toMinute] = getTimeFromInterval(interval.to);
 
-        const passageTime = convertToTime(currentHour, currentMinute);
+        const passageTime = convertToTime(
+            currentHour.toString(),
+            currentMinute.toString()
+        );
         const fromTime = convertToTime(fromHour, fromMinute);
         const toTime = convertToTime(toHour, toMinute);
 
@@ -33,7 +36,10 @@ function getTimeFromInterval(interval) {
 }
 
 function convertToTime(hour, minute) {
-    return new Date(`${STATIC_DATE}T${hour}:${minute}`);
+    const paddedHour = hour.padStart(2, "0");
+    const paddedMinute = minute.padStart(2, "0");
+
+    return new Date(`${STATIC_DATE}T${paddedHour}:${paddedMinute}`);
 }
 
 export function isBetweenDates(date, min, max) {

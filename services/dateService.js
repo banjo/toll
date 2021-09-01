@@ -5,8 +5,9 @@ import { Month } from "../domain/month.js";
 export function isTollFreeDate(date) {
     if (isWeekend(date) || isJuly(date)) return true;
 
-    if (holidays.some((holiday) => isSameDay(new Date(holiday), date)))
-        return true;
+    for (const holiday of holidays) {
+        if (isSameDay(new Date(holiday), date)) return true;
+    }
 
     return false;
 }

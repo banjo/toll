@@ -1,15 +1,22 @@
-import { isTollFreeDate } from "./services/dateService.js";
+import { isTollFreeDate, sortDates } from "./services/dateService.js";
 import { calculateTollFee } from "./services/priceService.js";
 import { isTollFreeVehicle } from "./services/vehicleService.js";
 
+const MAX_PRICE_PER_DAY = 60;
+
 function getTollFee(vehicle, ...dates) {
+    if (isTollFreeVehicle(vehicle)) return 0;
+
+    const sortedDates = sortDates(dates);
     let totalFee = 0;
-    const sortedDates = dates.sort((a, b) => a - b);
 
     for (const date of sortedDates) {
-        // if (isTollFreeVehicle(vehicle) || isTollFreeDate(date)) continue;
+        if (isTollFreeDate(date)) continue;
+
         totalFee += calculateTollFee(date);
     }
+
+    if (totalFee >= MAX_PRICE_PER_DAY) return MAX_PRICE_PER_DAY;
 
     return totalFee;
 }

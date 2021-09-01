@@ -11,6 +11,10 @@ export function isTollFreeDate(date) {
     return false;
 }
 
+export function sortDates(dates) {
+    return dates.sort((a, b) => a - b);
+}
+
 function isWeekend(date) {
     let day = date.getDay();
     return day === Day.SATURDAY || day == Day.SUNDAY;
